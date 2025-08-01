@@ -9,6 +9,29 @@ import { createInterface } from 'readline';
 import process from 'process';
 
 /**
+ * 将24小时制转换为12时辰序号
+ * @param {number} hour - 24小时制时间（0-23）
+ * @returns {number} 12时辰序号（0-11）
+ * 
+ * 时辰对照表：
+ * 子时(0): 23-1点   丑时(1): 1-3点    寅时(2): 3-5点    卯时(3): 5-7点
+ * 辰时(4): 7-9点    巳时(5): 9-11点   午时(6): 11-13点  未时(7): 13-15点  
+ * 申时(8): 15-17点  酉时(9): 17-19点  戌时(10): 19-21点 亥时(11): 21-23点
+ */
+function hourToTimeIndex(hour) {
+    // 确保hour在0-23范围内
+    hour = Math.max(0, Math.min(23, Math.floor(hour)));
+    
+    // 时辰划分：每个时辰2小时，但子时跨越了23-1点
+    if (hour === 23 || hour === 0) {
+        return 0; // 子时
+    } else {
+        // 其他时辰：1-3点为丑时(1)，3-5点为寅时(2)，依此类推
+        return Math.floor((hour + 1) / 2);
+    }
+}
+
+/**
  * 获取当前时间并返回格式化结果
  */
 function getCurrentTime() {
@@ -46,79 +69,34 @@ function getCurrentTime() {
  */
 function calculateZiwei(birthday, hour = 0, gender = '男', type = 'solar', isLeapMonth = false, language = 'zh-CN') {
     try {
+        // 将24小时制转换为12时辰序号
+        const timeIndex = hourToTimeIndex(hour);
         let astrolabe;
         
         if (type === 'solar') {
             // 阳历
-            astrolabe = astro.bySolar(birthday, hour, gender, true, language);
+            astrolabe = astro.bySolar(birthday, timeIndex, gender, true, language);
         } else {
             // 农历
-            astrolabe = astro.byLunar(birthday, hour, gender, isLeapMonth, true, language);
+            astrolabe = astro.byLunar(birthday, timeIndex, gender, isLeapMonth, true, language);
         }
         
         if (!astrolabe) {
             throw new Error('无法生成星盘数据');
         }
         
-        // 构建详细的返回数据
+        // 直接返回astrolabe对象，添加请求参数信息
         const result = {
-            birthday: birthday,
-            hour: hour,
-            gender: gender,
-            type: type,
-            isLeapMonth: isLeapMonth,
-            language: language,
-            
-            // 基本信息
-            solarDate: astrolabe.solarDate,
-            lunarDate: astrolabe.lunarDate,
-            chineseDate: astrolabe.chineseDate,
-            time: astrolabe.time,
-            timeRange: astrolabe.timeRange,
-            sign: astrolabe.sign,
-            zodiac: astrolabe.zodiac,
-            earthlyBranchOfSoulPalace: astrolabe.earthlyBranchOfSoulPalace,
-            earthlyBranchOfBodyPalace: astrolabe.earthlyBranchOfBodyPalace,
-            soul: astrolabe.soul,
-            body: astrolabe.body,
-            fiveElementsClass: astrolabe.fiveElementsClass,
-            
-            // 十二宫数据
-            palaces: astrolabe.palaces.map(palace => ({
-                name: palace.name,
-                isBodyPalace: palace.isBodyPalace,
-                isOriginalPalace: palace.isOriginalPalace,
-                heavenlyStem: palace.heavenlyStem,
-                earthlyBranch: palace.earthlyBranch,
-                majorStars: palace.majorStars.map(star => ({
-                    name: star.name,
-                    type: star.type,
-                    scope: star.scope,
-                    brightness: star.brightness,
-                    mutagen: star.mutagen
-                })),
-                minorStars: palace.minorStars.map(star => ({
-                    name: star.name,
-                    type: star.type,
-                    scope: star.scope,
-                    brightness: star.brightness,
-                    mutagen: star.mutagen
-                })),
-                adjectiveStars: palace.adjectiveStars.map(star => ({
-                    name: star.name,
-                    type: star.type,
-                    scope: star.scope,
-                    brightness: star.brightness,
-                    mutagen: star.mutagen
-                })),
-                changeLimitStars: palace.changeLimitStars.map(star => ({
-                    name: star.name,
-                    type: star.type,
-                    scope: star.scope,
-                    brightness: star.brightness,
-                    mutagen: star.mutagen
-                }))
-            }))
+            ...astrolabe,
+            requestParams: {
+                birthday: birthday,
+                hour: hour,
+                timeIndex: timeIndex,
+                gender: gender,
+                type: type,
+                isLeapMonth: isLeapMonth,
+                language: language
+            }
         };
         
         return { success: true, data: result };
@@ -139,12 +117,14 @@ function calculateZiwei(birthday, hour = 0, gender = '男', type = 'solar', isLe
  */
 function getHoroscope(birthday, hour = 0, gender = '男', type = 'solar', isLeapMonth = false, targetDate = null, language = 'zh-CN') {
     try {
+        // 将24小时制转换为12时辰序号
+        const timeIndex = hourToTimeIndex(hour);
         let astrolabe;
         
         if (type === 'solar') {
-            astrolabe = astro.bySolar(birthday, hour, gender, true, language);
+            astrolabe = astro.bySolar(birthday, timeIndex, gender, true, language);
         } else {
-            astrolabe = astro.byLunar(birthday, hour, gender, isLeapMonth, true, language);
+            astrolabe = astro.byLunar(birthday, timeIndex, gender, isLeapMonth, true, language);
         }
         
         if (!astrolabe) {
@@ -155,59 +135,19 @@ function getHoroscope(birthday, hour = 0, gender = '男', type = 'solar', isLeap
         const target = targetDate ? new Date(targetDate) : new Date();
         const horoscope = astrolabe.horoscope(target);
         
+        // 直接返回horoscope对象，添加请求参数信息
         const result = {
-            birthday: birthday,
-            hour: hour,
-            gender: gender,
-            type: type,
-            isLeapMonth: isLeapMonth,
-            targetDate: target.toISOString().slice(0, 10),
-            language: language,
-            
-            // 运限信息
-            solarDate: horoscope.solarDate,
-            lunarDate: horoscope.lunarDate,
-            chineseDate: horoscope.chineseDate,
-            decadal: horoscope.decadal,
-            age: horoscope.age,
-            yearIndex: horoscope.yearIndex,
-            
-            // 十二宫运限数据
-            palaces: horoscope.palaces.map(palace => ({
-                name: palace.name,
-                isBodyPalace: palace.isBodyPalace,
-                isOriginalPalace: palace.isOriginalPalace,
-                heavenlyStem: palace.heavenlyStem,
-                earthlyBranch: palace.earthlyBranch,
-                majorStars: palace.majorStars.map(star => ({
-                    name: star.name,
-                    type: star.type,
-                    scope: star.scope,
-                    brightness: star.brightness,
-                    mutagen: star.mutagen
-                })),
-                minorStars: palace.minorStars.map(star => ({
-                    name: star.name,
-                    type: star.type,
-                    scope: star.scope,
-                    brightness: star.brightness,
-                    mutagen: star.mutagen
-                })),
-                adjectiveStars: palace.adjectiveStars.map(star => ({
-                    name: star.name,
-                    type: star.type,
-                    scope: star.scope,
-                    brightness: star.brightness,
-                    mutagen: star.mutagen
-                })),
-                changeLimitStars: palace.changeLimitStars.map(star => ({
-                    name: star.name,
-                    type: star.type,
-                    scope: star.scope,
-                    brightness: star.brightness,
-                    mutagen: star.mutagen
-                }))
-            }))
+            ...horoscope,
+            requestParams: {
+                birthday: birthday,
+                hour: hour,
+                timeIndex: timeIndex,
+                gender: gender,
+                type: type,
+                isLeapMonth: isLeapMonth,
+                targetDate: target.toISOString().slice(0, 10),
+                language: language
+            }
         };
         
         return { success: true, data: result };
