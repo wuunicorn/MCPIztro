@@ -32,8 +32,8 @@
 ### 克隆仓库
 
 ```bash
-git clone https://github.com/yourusername/ziwei-mcp-server.git
-cd ziwei-mcp-server
+git clone https://github.com/wuunicorn/MCPIztro.git
+cd MCPIztro
 ```
 
 ### 安装依赖
@@ -191,7 +191,7 @@ echo '{"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": "ca
 ## 🏗️ 项目结构
 
 ```
-ziwei-mcp-server/
+MCPIztro/
 ├── README.md                 # 项目介绍文档
 ├── package.json             # 项目配置和依赖
 ├── package-lock.json        # 依赖锁定文件
@@ -244,8 +244,8 @@ node -e "import { astro } from 'iztro'; console.log('依赖加载成功');"
 
 如果您有任何问题或建议，请通过以下方式联系：
 
-- 提交 [Issue](https://github.com/yourusername/ziwei-mcp-server/issues)
-- 发送邮件到：your.email@example.com
+- 提交 [Issue](https://github.com/wuunicorn/MCPIztro/issues)
+- 发送邮件到：wuunicorn@gmail.com
 
 ---
 
