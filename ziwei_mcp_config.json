@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "ziwei": {
+      "command": "node",
+      "args": ["/YourPath/MCPIztro/ziwei_mcp_server.js"],
+      "env": {
+        "NODE_PATH": "/YourPath/MCPIztro/node_modules"
+      }
+    }
+  }
+}

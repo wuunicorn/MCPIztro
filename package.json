@@ -1,0 +1,37 @@
+{
+  "name": "ziwei-mcp-server",
+  "version": "1.0.0",
+  "description": "紫微斗数 MCP 服务器 - 基于 iztro 库",
+  "main": "ziwei_mcp_server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ziwei_mcp_server.js",
+    "test": "node test_ziwei.js"
+  },
+  "keywords": [
+    "mcp",
+    "ziwei",
+    "astrology",
+    "chinese-astrology",
+    "iztro",
+    "fortune-telling",
+    "model-context-protocol",
+    "purple-star-astrology"
+  ],
+  "author": "Ziwei MCP Server Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/ziwei-mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/ziwei-mcp-server/issues"
+  },
+  "homepage": "https://github.com/yourusername/ziwei-mcp-server#readme",
+  "dependencies": {
+    "iztro": "^2.5.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
