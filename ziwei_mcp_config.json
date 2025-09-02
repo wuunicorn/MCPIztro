@@ -1,10 +1,19 @@
 {
   "mcpServers": {
     "ziwei": {
-      "command": "node",
-      "args": ["/YourPath/MCPIztro/ziwei_mcp_server.js"],
+      "command": "/opt/homebrew/bin/node",
+      "args": ["/Users/wuguangxin/Documents/个人工具/MCPIztro/ziwei_mcp_server.js"],
       "env": {
-        "NODE_PATH": "/YourPath/MCPIztro/node_modules"
+        "NODE_PATH": "/Users/wuguangxin/Documents/个人工具/MCPIztro/node_modules",
+        "PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
+      }
+    },
+    "ziwei_npm": {
+      "command": "npm",
+      "args": ["run", "start"],
+      "cwd": "/Users/wuguangxin/Documents/个人工具/MCPIztro",
+      "env": {
+        "PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
       }
     }
   }

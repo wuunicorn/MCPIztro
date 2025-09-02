@@ -109,11 +109,17 @@ function testPalaceFunctions() {
         console.log('命宫信息：', palace.name, palace.heavenlyStem + palace.earthlyBranch);
         
         // 检查命宫是否有紫微星
-        const hasZiwei = palace.hasStar('紫微');
+        const hasZiwei = palace.majorStars.some(star => star.name === '紫微');
         console.log('命宫是否有紫微星：', hasZiwei);
-        
-        // 获取紫微星所在宫位
-        const ziweiPalace = astrolabe.star('紫微').palace();
+
+        // 获取紫微星所在宫位 - 遍历所有宫位查找紫微星
+        let ziweiPalace = null;
+        for (const p of astrolabe.palaces) {
+            if (p.majorStars.some(star => star.name === '紫微')) {
+                ziweiPalace = p;
+                break;
+            }
+        }
         console.log('紫微星在：', ziweiPalace?.name || '无');
         
         console.log('\n✓ 宫位检索功能测试成功\n');
