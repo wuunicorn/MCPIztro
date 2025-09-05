@@ -142,8 +142,8 @@ function calculateZiwei(birthday, hour = 0, minute = 0, gender = '男', type = '
             actualMinute = trueSolarTime.minute;
         }
 
-        // 将24小时制转换为12时辰序号（使用原始北京时间）
-        const timeIndex = hourToTimeIndex(hour);
+        // 将24小时制转换为12时辰序号（使用真太阳时）
+        const timeIndex = hourToTimeIndex(actualHour);
         let astrolabe;
 
         if (type === 'solar') {
